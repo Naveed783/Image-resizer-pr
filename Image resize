@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hello & Image Resizer</title>
+
+  <!-- ✅ AdSense Auto Ads Script -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4479848813207959"
+     crossorigin="anonymous"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .container {
+      background: white;
+      padding: 2rem;
+      max-width: 500px;
+      margin: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+
+    input, button {
+      margin: 10px 0;
+      padding: 10px;
+      width: 100%;
+      font-size: 16px;
+    }
+
+    canvas {
+      display: none;
+      margin-top: 20px;
+      max-width: 100%;
+    }
+
+    h1.title {
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hello World Section -->
+  <h1 class="title">Hello World!</h1>
+  <p id="currentTime"></p>
+
+  <!-- Image Resizer Section -->
+  <div class="container">
+    <h2>🖼️ Image Resizer</h2>
+    <input type="file" id="upload" accept="image/*" />
+    <input type="number" id="width" placeholder="New width (px)" />
+    <input type="number" id="height" placeholder="New height (px)" />
+    <button onclick="resizeImage()">Resize</button>
+    <a id="download" style="display:none;" download="resized-image.png">
+      <button>Download</button>
+    </a>
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <script>
+    // Hello World: Show current time
+    document.getElementById('currentTime').textContent = new Date().toLocaleTimeString();
+
+    // Image Resizer Logic
+    let originalImage;
+
+    document.getElementById('upload').addEventListener('change', function(e) {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const img = new Image();
+        img.onload = function() {
+          originalImage = img;
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    });
+
+    function resizeImage() {
+      if (!originalImage) return alert('Please upload an image first!');
+      const width = parseInt(document.getElementById('width').value);
+      const height = parseInt(document.getElementById('height').value);
+      if (!width || !height) return alert('Enter both width and height!');
+
+      const canvas = document.getElementById('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(originalImage, 0, 0, width, height);
+      canvas.style.display = 'block';
+
+      const downloadLink = document.getElementById('download');
+      downloadLink.href = canvas.toDataURL('image/png');
+      downloadLink.style.display = 'inline-block';
+    }
+  </script>
+
+</body>
+</html>
